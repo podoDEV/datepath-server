@@ -1,0 +1,155 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "데이트 장소 만들기 위한 API",
+        "title": "Swagger Date Path API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost",
+    "paths": {
+        "/local/search/keyword": {
+            "post": {
+                "description": "키워드 장소 검색",
+                "consumes": [
+                    "application/x-www-form-urlencoded"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "키워드 장소 검색",
+                "parameters": [
+                    {
+                        "maxLength": 15,
+                        "minLength": 1,
+                        "type": "string",
+                        "description": "검색을 원하는 질의어",
+                        "name": "query",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "number",
+                        "description": "중심 좌표의 X값 혹은 longitude. 특정 지역을 중심으로 검색하려고 할 경우 radius와 함께 사용 가능",
+                        "name": "x",
+                        "in": "query"
+                    },
+                    {
+                        "type": "number",
+                        "description": "중심 좌표의 Y값 혹은 latitude. 특정 지역을 중심으로 검색하려고 할 경우 radius와 함께 사용 가능",
+                        "name": "y",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "중심 좌표부터의 반경거리. 특정 지역을 중심으로 검색하려고 할 경우 중심좌표로 쓰일 x,y와 함께 사용. 단위 meter, 0~20000 사이의 값",
+                        "name": "radius",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/local.Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "local.Document": {
+            "type": "object",
+            "properties": {
+                "address_name": {
+                    "type": "string"
+                },
+                "category_group_code": {
+                    "type": "string"
+                },
+                "category_group_name": {
+                    "type": "string"
+                },
+                "category_name": {
+                    "type": "string"
+                },
+                "distance": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "phone": {
+                    "type": "string"
+                },
+                "place_name": {
+                    "type": "string"
+                },
+                "place_url": {
+                    "type": "string"
+                },
+                "road_address_name": {
+                    "type": "string"
+                },
+                "x": {
+                    "type": "string"
+                },
+                "y": {
+                    "type": "string"
+                }
+            }
+        },
+        "local.Response": {
+            "type": "object",
+            "properties": {
+                "documents": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/local.Document"
+                    }
+                },
+                "meta": {
+                    "type": "object",
+                    "properties": {
+                        "is_end": {
+                            "type": "boolean"
+                        },
+                        "pageable_count": {
+                            "type": "integer"
+                        },
+                        "same_name": {
+                            "type": "object",
+                            "properties": {
+                                "keyword": {
+                                    "type": "string"
+                                },
+                                "region": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "selected_region": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "total_count": {
+                            "type": "integer"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

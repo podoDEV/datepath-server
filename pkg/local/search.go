@@ -39,6 +39,35 @@ type Request struct {
 	Radius int     `query:"radius"`
 }
 
+type Response struct {
+	Documents []Document `json:"documents"`
+	Meta      struct {
+		IsEnd         bool `json:"is_end"`
+		PageableCount int  `json:"pageable_count"`
+		SameName      struct {
+			Keyword        string   `json:"keyword"`
+			Region         []string `json:"region"`
+			SelectedRegion string   `json:"selected_region"`
+		} `json:"same_name"`
+		TotalCount int `json:"total_count"`
+	} `json:"meta"`
+}
+
+type Document struct {
+	AddressName       string `json:"address_name"`
+	CategoryGroupCode string `json:"category_group_code"`
+	CategoryGroupName string `json:"category_group_name"`
+	CategoryName      string `json:"category_name"`
+	Distance          string `json:"distance"`
+	Id                string `json:"id"`
+	Phone             string `json:"phone"`
+	PlaceName         string `json:"place_name"`
+	PlaceURL          string `json:"place_url"`
+	RoadAddressName   string `json:"road_address_name"`
+	X                 string `json:"x"`
+	Y                 string `json:"y"`
+}
+
 func (c *Client) SearchKeyword(r *Request) (*http.Response, error) {
 	v := url.Values{}
 	v.Set("query", r.Query)

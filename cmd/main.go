@@ -5,11 +5,13 @@ import (
 	"flag"
 	"fmt"
 	"github.com/PODO/datepath-server"
+	_ "github.com/PODO/datepath-server/docs"
 	"github.com/PODO/datepath-server/handler/local"
 	"github.com/PODO/datepath-server/pkg/logrotater"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"net/http"
 	"os"
 	"os/signal"
@@ -17,6 +19,19 @@ import (
 	"time"
 )
 
+// @title Swagger Date Path API
+// @version 1.0
+// @description 데이트 장소 만들기 위한 API
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost
 func main() {
 	confFilePath := flag.String("conf", "", "config file path")
 	echoLogPath := flag.String("log-path", "", "echo output log path")
@@ -47,6 +62,7 @@ func main() {
 	e.Logger.SetOutput(&lr.Logger)
 	go lr.Run()
 
+	e.GET("/swagger/*", echoSwagger.WrapHandler)
 	e.POST("/local/search/keyword", local.SearchKeywordHandler)
 
 	servicePort := fmt.Sprintf(":%d", conf.Server.Port)

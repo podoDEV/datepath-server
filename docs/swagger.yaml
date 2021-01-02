@@ -1,0 +1,105 @@
+definitions:
+  local.Document:
+    properties:
+      address_name:
+        type: string
+      category_group_code:
+        type: string
+      category_group_name:
+        type: string
+      category_name:
+        type: string
+      distance:
+        type: string
+      id:
+        type: string
+      phone:
+        type: string
+      place_name:
+        type: string
+      place_url:
+        type: string
+      road_address_name:
+        type: string
+      x:
+        type: string
+      "y":
+        type: string
+    type: object
+  local.Response:
+    properties:
+      documents:
+        items:
+          $ref: '#/definitions/local.Document'
+        type: array
+      meta:
+        properties:
+          is_end:
+            type: boolean
+          pageable_count:
+            type: integer
+          same_name:
+            properties:
+              keyword:
+                type: string
+              region:
+                items:
+                  type: string
+                type: array
+              selected_region:
+                type: string
+            type: object
+          total_count:
+            type: integer
+        type: object
+    type: object
+host: localhost
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: 데이트 장소 만들기 위한 API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger Date Path API
+  version: "1.0"
+paths:
+  /local/search/keyword:
+    post:
+      consumes:
+      - application/x-www-form-urlencoded
+      description: 키워드 장소 검색
+      parameters:
+      - description: 검색을 원하는 질의어
+        in: query
+        maxLength: 15
+        minLength: 1
+        name: query
+        required: true
+        type: string
+      - description: 중심 좌표의 X값 혹은 longitude. 특정 지역을 중심으로 검색하려고 할 경우 radius와 함께 사용
+          가능
+        in: query
+        name: x
+        type: number
+      - description: 중심 좌표의 Y값 혹은 latitude. 특정 지역을 중심으로 검색하려고 할 경우 radius와 함께 사용 가능
+        in: query
+        name: "y"
+        type: number
+      - description: 중심 좌표부터의 반경거리. 특정 지역을 중심으로 검색하려고 할 경우 중심좌표로 쓰일 x,y와 함께 사용. 단위
+          meter, 0~20000 사이의 값
+        in: query
+        name: radius
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/local.Response'
+      summary: 키워드 장소 검색
+swagger: "2.0"
