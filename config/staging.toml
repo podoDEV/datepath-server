@@ -1,0 +1,14 @@
+workspace = "staging"
+
+[server]
+port = 8090
+https_on = false
+ssl_key_path = "/etc/datepath-server.d/ssl/key.pem"
+ssl_crt_path = "/etc/datepath-server.d/ssl/cert.pem"
+shutdown_timeout_in_second = 30
+
+[logrotater]
+log_max_size = 300
+log_max_backups = 90
+log_max_age = 90
+log_compress = true
