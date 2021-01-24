@@ -12,3 +12,9 @@ log_max_size = 300
 log_max_backups = 90
 log_max_age = 90
 log_compress = true
+
+[local]
+app_key = ""
+
+[direction]
+app_key = ""

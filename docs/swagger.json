@@ -17,6 +17,52 @@
     },
     "host": "localhost",
     "paths": {
+        "/direction/coordinates": {
+            "get": {
+                "description": "길찾기",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "길찾기",
+                "parameters": [
+                    {
+                        "maxLength": 40,
+                        "minLength": 3,
+                        "type": "string",
+                        "default": "37.389624,126.950745",
+                        "description": "출발 지점의 위도,경도. default: 범계역",
+                        "name": "origin",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "maxLength": 40,
+                        "minLength": 3,
+                        "type": "string",
+                        "default": "37.394640,127.111135",
+                        "description": "도착 지점의 위도,경도역. default: 판교역",
+                        "name": "destination",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "default": "1614332700",
+                        "description": "출발 시간. UTC 1970 년 1월 1일 0시 0분 0초 부터 경과한 초를 정수로 반환한 값. 현재 시각으로 찾으려면 'now'를 전달한다.",
+                        "name": "departure_time",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/direction.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/local/search/keyword": {
             "post": {
                 "description": "키워드 장소 검색",
@@ -32,6 +78,7 @@
                         "maxLength": 15,
                         "minLength": 1,
                         "type": "string",
+                        "default": "판교역",
                         "description": "검색을 원하는 질의어",
                         "name": "query",
                         "in": "query",
@@ -68,6 +115,447 @@
         }
     },
     "definitions": {
+        "direction.Response": {
+            "type": "object",
+            "properties": {
+                "geocoded_waypoints": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "geocoder_status": {
+                                "type": "string"
+                            },
+                            "place_id": {
+                                "type": "string"
+                            },
+                            "types": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "routes": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "bounds": {
+                                "type": "object",
+                                "properties": {
+                                    "northeast": {
+                                        "type": "object",
+                                        "properties": {
+                                            "lat": {
+                                                "type": "number"
+                                            },
+                                            "lng": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    },
+                                    "southwest": {
+                                        "type": "object",
+                                        "properties": {
+                                            "lat": {
+                                                "type": "number"
+                                            },
+                                            "lng": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "copyrights": {
+                                "type": "string"
+                            },
+                            "legs": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "arrival_time": {
+                                            "type": "object",
+                                            "properties": {
+                                                "text": {
+                                                    "type": "string"
+                                                },
+                                                "time_zone": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        },
+                                        "departure_time": {
+                                            "type": "object",
+                                            "properties": {
+                                                "text": {
+                                                    "type": "string"
+                                                },
+                                                "time_zone": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        },
+                                        "distance": {
+                                            "type": "object",
+                                            "properties": {
+                                                "text": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        },
+                                        "duration": {
+                                            "type": "object",
+                                            "properties": {
+                                                "text": {
+                                                    "type": "string"
+                                                },
+                                                "value": {
+                                                    "type": "integer"
+                                                }
+                                            }
+                                        },
+                                        "end_address": {
+                                            "type": "string"
+                                        },
+                                        "end_location": {
+                                            "type": "object",
+                                            "properties": {
+                                                "lat": {
+                                                    "type": "number"
+                                                },
+                                                "lng": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        "start_address": {
+                                            "type": "string"
+                                        },
+                                        "start_location": {
+                                            "type": "object",
+                                            "properties": {
+                                                "lat": {
+                                                    "type": "number"
+                                                },
+                                                "lng": {
+                                                    "type": "number"
+                                                }
+                                            }
+                                        },
+                                        "steps": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "distance": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "integer"
+                                                            }
+                                                        }
+                                                    },
+                                                    "duration": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "text": {
+                                                                "type": "string"
+                                                            },
+                                                            "value": {
+                                                                "type": "integer"
+                                                            }
+                                                        }
+                                                    },
+                                                    "end_location": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "lat": {
+                                                                "type": "number"
+                                                            },
+                                                            "lng": {
+                                                                "type": "number"
+                                                            }
+                                                        }
+                                                    },
+                                                    "html_instructions": {
+                                                        "type": "string"
+                                                    },
+                                                    "polyline": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "points": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    },
+                                                    "start_location": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "lat": {
+                                                                "type": "number"
+                                                            },
+                                                            "lng": {
+                                                                "type": "number"
+                                                            }
+                                                        }
+                                                    },
+                                                    "steps": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "distance": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "text": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "value": {
+                                                                            "type": "integer"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "duration": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "text": {
+                                                                            "type": "string"
+                                                                        },
+                                                                        "value": {
+                                                                            "type": "integer"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "end_location": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "lat": {
+                                                                            "type": "number"
+                                                                        },
+                                                                        "lng": {
+                                                                            "type": "number"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "polyline": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "points": {
+                                                                            "type": "string"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "start_location": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "lat": {
+                                                                            "type": "number"
+                                                                        },
+                                                                        "lng": {
+                                                                            "type": "number"
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "travel_mode": {
+                                                                    "type": "string"
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    "transit_details": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "arrival_stop": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "location": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "lat": {
+                                                                                "type": "number"
+                                                                            },
+                                                                            "lng": {
+                                                                                "type": "number"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "arrival_time": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "text": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "time_zone": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "value": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "departure_stop": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "location": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "lat": {
+                                                                                "type": "number"
+                                                                            },
+                                                                            "lng": {
+                                                                                "type": "number"
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "departure_time": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "text": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "time_zone": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "value": {
+                                                                        "type": "integer"
+                                                                    }
+                                                                }
+                                                            },
+                                                            "headsign": {
+                                                                "type": "string"
+                                                            },
+                                                            "headway": {
+                                                                "type": "integer"
+                                                            },
+                                                            "line": {
+                                                                "type": "object",
+                                                                "properties": {
+                                                                    "agencies": {
+                                                                        "type": "array",
+                                                                        "items": {
+                                                                            "type": "object",
+                                                                            "properties": {
+                                                                                "name": {
+                                                                                    "type": "string"
+                                                                                },
+                                                                                "url": {
+                                                                                    "type": "string"
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    "color": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "short_name": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "text_color": {
+                                                                        "type": "string"
+                                                                    },
+                                                                    "vehicle": {
+                                                                        "type": "object",
+                                                                        "properties": {
+                                                                            "icon": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "name": {
+                                                                                "type": "string"
+                                                                            },
+                                                                            "type": {
+                                                                                "type": "string"
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            },
+                                                            "num_stops": {
+                                                                "type": "integer"
+                                                            }
+                                                        }
+                                                    },
+                                                    "travel_mode": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "traffic_speed_entry": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "via_waypoint": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "overview_polyline": {
+                                "type": "object",
+                                "properties": {
+                                    "points": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "summary": {
+                                "type": "string"
+                            },
+                            "warnings": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                }
+                            },
+                            "waypoint_order": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
         "local.Document": {
             "type": "object",
             "properties": {

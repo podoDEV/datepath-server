@@ -1,4 +1,286 @@
 definitions:
+  direction.Response:
+    properties:
+      geocoded_waypoints:
+        items:
+          properties:
+            geocoder_status:
+              type: string
+            place_id:
+              type: string
+            types:
+              items:
+                type: string
+              type: array
+          type: object
+        type: array
+      routes:
+        items:
+          properties:
+            bounds:
+              properties:
+                northeast:
+                  properties:
+                    lat:
+                      type: number
+                    lng:
+                      type: number
+                  type: object
+                southwest:
+                  properties:
+                    lat:
+                      type: number
+                    lng:
+                      type: number
+                  type: object
+              type: object
+            copyrights:
+              type: string
+            legs:
+              items:
+                properties:
+                  arrival_time:
+                    properties:
+                      text:
+                        type: string
+                      time_zone:
+                        type: string
+                      value:
+                        type: integer
+                    type: object
+                  departure_time:
+                    properties:
+                      text:
+                        type: string
+                      time_zone:
+                        type: string
+                      value:
+                        type: integer
+                    type: object
+                  distance:
+                    properties:
+                      text:
+                        type: string
+                      value:
+                        type: integer
+                    type: object
+                  duration:
+                    properties:
+                      text:
+                        type: string
+                      value:
+                        type: integer
+                    type: object
+                  end_address:
+                    type: string
+                  end_location:
+                    properties:
+                      lat:
+                        type: number
+                      lng:
+                        type: number
+                    type: object
+                  start_address:
+                    type: string
+                  start_location:
+                    properties:
+                      lat:
+                        type: number
+                      lng:
+                        type: number
+                    type: object
+                  steps:
+                    items:
+                      properties:
+                        distance:
+                          properties:
+                            text:
+                              type: string
+                            value:
+                              type: integer
+                          type: object
+                        duration:
+                          properties:
+                            text:
+                              type: string
+                            value:
+                              type: integer
+                          type: object
+                        end_location:
+                          properties:
+                            lat:
+                              type: number
+                            lng:
+                              type: number
+                          type: object
+                        html_instructions:
+                          type: string
+                        polyline:
+                          properties:
+                            points:
+                              type: string
+                          type: object
+                        start_location:
+                          properties:
+                            lat:
+                              type: number
+                            lng:
+                              type: number
+                          type: object
+                        steps:
+                          items:
+                            properties:
+                              distance:
+                                properties:
+                                  text:
+                                    type: string
+                                  value:
+                                    type: integer
+                                type: object
+                              duration:
+                                properties:
+                                  text:
+                                    type: string
+                                  value:
+                                    type: integer
+                                type: object
+                              end_location:
+                                properties:
+                                  lat:
+                                    type: number
+                                  lng:
+                                    type: number
+                                type: object
+                              polyline:
+                                properties:
+                                  points:
+                                    type: string
+                                type: object
+                              start_location:
+                                properties:
+                                  lat:
+                                    type: number
+                                  lng:
+                                    type: number
+                                type: object
+                              travel_mode:
+                                type: string
+                            type: object
+                          type: array
+                        transit_details:
+                          properties:
+                            arrival_stop:
+                              properties:
+                                location:
+                                  properties:
+                                    lat:
+                                      type: number
+                                    lng:
+                                      type: number
+                                  type: object
+                                name:
+                                  type: string
+                              type: object
+                            arrival_time:
+                              properties:
+                                text:
+                                  type: string
+                                time_zone:
+                                  type: string
+                                value:
+                                  type: integer
+                              type: object
+                            departure_stop:
+                              properties:
+                                location:
+                                  properties:
+                                    lat:
+                                      type: number
+                                    lng:
+                                      type: number
+                                  type: object
+                                name:
+                                  type: string
+                              type: object
+                            departure_time:
+                              properties:
+                                text:
+                                  type: string
+                                time_zone:
+                                  type: string
+                                value:
+                                  type: integer
+                              type: object
+                            headsign:
+                              type: string
+                            headway:
+                              type: integer
+                            line:
+                              properties:
+                                agencies:
+                                  items:
+                                    properties:
+                                      name:
+                                        type: string
+                                      url:
+                                        type: string
+                                    type: object
+                                  type: array
+                                color:
+                                  type: string
+                                name:
+                                  type: string
+                                short_name:
+                                  type: string
+                                text_color:
+                                  type: string
+                                vehicle:
+                                  properties:
+                                    icon:
+                                      type: string
+                                    name:
+                                      type: string
+                                    type:
+                                      type: string
+                                  type: object
+                              type: object
+                            num_stops:
+                              type: integer
+                          type: object
+                        travel_mode:
+                          type: string
+                      type: object
+                    type: array
+                  traffic_speed_entry:
+                    items:
+                      type: object
+                    type: array
+                  via_waypoint:
+                    items:
+                      type: object
+                    type: array
+                type: object
+              type: array
+            overview_polyline:
+              properties:
+                points:
+                  type: string
+              type: object
+            summary:
+              type: string
+            warnings:
+              items:
+                type: string
+              type: array
+            waypoint_order:
+              items:
+                type: object
+              type: array
+          type: object
+        type: array
+      status:
+        type: string
+    type: object
   local.Document:
     properties:
       address_name:
@@ -67,13 +349,48 @@ info:
   title: Swagger Date Path API
   version: "1.0"
 paths:
+  /direction/coordinates:
+    get:
+      description: 길찾기
+      parameters:
+      - default: 37.389624,126.950745
+        description: '출발 지점의 위도,경도. default: 범계역'
+        in: query
+        maxLength: 40
+        minLength: 3
+        name: origin
+        required: true
+        type: string
+      - default: 37.394640,127.111135
+        description: '도착 지점의 위도,경도역. default: 판교역'
+        in: query
+        maxLength: 40
+        minLength: 3
+        name: destination
+        required: true
+        type: string
+      - default: "1614332700"
+        description: 출발 시간. UTC 1970 년 1월 1일 0시 0분 0초 부터 경과한 초를 정수로 반환한 값. 현재 시각으로
+          찾으려면 'now'를 전달한다.
+        in: query
+        name: departure_time
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/direction.Response'
+      summary: 길찾기
   /local/search/keyword:
     post:
       consumes:
       - application/x-www-form-urlencoded
       description: 키워드 장소 검색
       parameters:
-      - description: 검색을 원하는 질의어
+      - default: 판교역
+        description: 검색을 원하는 질의어
         in: query
         maxLength: 15
         minLength: 1

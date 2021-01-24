@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/PODO/datepath-server"
 	_ "github.com/PODO/datepath-server/docs"
+	"github.com/PODO/datepath-server/handler/direction"
 	"github.com/PODO/datepath-server/handler/local"
 	"github.com/PODO/datepath-server/pkg/logrotater"
 	"github.com/labstack/echo/v4"
@@ -47,9 +48,12 @@ func main() {
 
 	conf, err := datepath_server.LoadConfig(*confFilePath)
 	if err != nil {
-		fmt.Println(err.Error())
+		panic(err)
 	}
 	e.Use(bindConfig(conf))
+
+	clients := datepath_server.NewServiceClients(conf)
+	e.Use(bindClients(clients))
 
 	logFileName := "echo.log"
 	logFilePath := fmt.Sprintf("%s%s", *echoLogPath, logFileName)
@@ -63,7 +67,12 @@ func main() {
 	go lr.Run()
 
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
-	e.POST("/local/search/keyword", local.SearchKeywordHandler)
+
+	lg := e.Group("/local/search/keyword")
+	lg.POST("", local.SearchKeywordHandler)
+
+	dg := e.Group("/direction/coordinates")
+	dg.GET("", direction.DirectionHandler)
 
 	servicePort := fmt.Sprintf(":%d", conf.Server.Port)
 	go func() {
@@ -106,6 +115,15 @@ func bindConfig(conf *datepath_server.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			c.Set("datepathServerConfig", conf)
+			return next(c)
+		}
+	}
+}
+
+func bindClients(clients *datepath_server.ServiceClients) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Set("datepathServiceClients", clients)
 			return next(c)
 		}
 	}

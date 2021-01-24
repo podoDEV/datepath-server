@@ -3,6 +3,8 @@ package datepath_server
 import (
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"github.com/PODO/datepath-server/pkg/direction"
+	"github.com/PODO/datepath-server/pkg/local"
 	"github.com/PODO/datepath-server/pkg/logrotater"
 )
 
@@ -25,6 +27,8 @@ type ServerConfig struct {
 type Config struct {
 	Server     ServerConfig      `toml:"server"`
 	LogRotater logrotater.Config `toml:"logrotater"`
+	Local      local.Config      `toml:"local"`
+	Direction  direction.Config  `toml:"direction"`
 }
 
 func NewDefaultConfig() *Config {

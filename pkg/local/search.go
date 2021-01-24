@@ -10,15 +10,19 @@ import (
 
 const (
 	searchLocalKeywordURL = "https://dapi.kakao.com/v2/local/search/keyword.json"
-	appkey                = "61891b84ee488dfa867a03aa50399af7"
 )
+
+type Config struct {
+	AppKey string `toml:"app_key"`
+}
 
 type Client struct {
 	URL    *url.URL
 	client *http.Client
+	appKey string
 }
 
-func NewClient() *Client {
+func NewClient(conf *Config) *Client {
 	u, err := url.Parse(searchLocalKeywordURL)
 	if err != nil {
 		panic(err)
@@ -29,6 +33,7 @@ func NewClient() *Client {
 	return &Client{
 		URL:    u,
 		client: client,
+		appKey: conf.AppKey,
 	}
 }
 
@@ -81,7 +86,7 @@ func (c *Client) SearchKeyword(r *Request) (*http.Response, error) {
 		return nil, err
 	}
 	httpReq.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	httpReq.Header.Set("Authorization", "KakaoAK "+appkey)
+	httpReq.Header.Set("Authorization", "KakaoAK "+c.appKey)
 
 	httpResp, err := c.client.Do(httpReq)
 	if err != nil {
